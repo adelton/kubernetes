@@ -3346,6 +3346,25 @@ func ValidatePodSecurityContext(securityContext *core.PodSecurityContext, spec *
 				allErrs = append(allErrs, field.Invalid(fldPath.Child("shareProcessNamespace"), *securityContext.ShareProcessNamespace, "ShareProcessNamespace and HostPID cannot both be enabled"))
 			}
 		}
+		for i, uid := range securityContext.UIDMappings {
+			if uid.ContainerId == nil {
+				allErrs = append(allErrs, field.Invalid(fldPath.Child("UIDMappings").Index(i), uid, "ContainerId has to be specified"))
+			}
+		}
+		for i, gid := range securityContext.GIDMappings {
+			if gid.ContainerId == nil {
+				allErrs = append(allErrs, field.Invalid(fldPath.Child("GIDMappings").Index(i), gid, "ContainerId has to be specified"))
+			}
+		}
+		if len(securityContext.UIDMappings) > 0 {
+			if len(securityContext.GIDMappings) == 0 {
+				allErrs = append(allErrs, field.Invalid(fldPath.Child("GIDMappings"), securityContext.GIDMappings, "When UIDMappings is specified, GIDMappings must be specified as well"))
+			}
+		} else {
+			if len(securityContext.GIDMappings) > 0 {
+				allErrs = append(allErrs, field.Invalid(fldPath.Child("UIDMappings"), securityContext.UIDMappings, "When GIDMappings is specified, UIDMappings must be specified as well"))
+			}
+		}
 	}
 
 	return allErrs
@@ -4990,6 +5009,25 @@ func ValidateSecurityContext(sc *core.SecurityContext, fldPath *field.Path) fiel
 					allErrs = append(allErrs, field.Invalid(fldPath, sc, "cannot set `allowPrivilegeEscalation` to false and `capabilities.Add` CAP_SYS_ADMIN"))
 				}
 			}
+		}
+	}
+	for i, uid := range sc.UIDMappings {
+		if uid.ContainerId == nil {
+			allErrs = append(allErrs, field.Invalid(fldPath.Child("UIDMappings").Index(i), uid, "ContainerId has to be specified"))
+		}
+	}
+	for i, gid := range sc.GIDMappings {
+		if gid.ContainerId == nil {
+			allErrs = append(allErrs, field.Invalid(fldPath.Child("UIDMappings").Index(i), gid, "ContainerId has to be specified"))
+		}
+	}
+	if len(sc.UIDMappings) > 0 {
+		if len(sc.GIDMappings) == 0 {
+			allErrs = append(allErrs, field.Invalid(fldPath.Child("GIDMappings"), sc.GIDMappings, "When UIDMappings is specified, GIDMappings must be specified as well"))
+		}
+	} else {
+		if len(sc.GIDMappings) > 0 {
+			allErrs = append(allErrs, field.Invalid(fldPath.Child("UIDMappings"), sc.UIDMappings, "When GIDMappings is specified, UIDMappings must be specified as well"))
 		}
 	}
 

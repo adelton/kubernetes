@@ -2571,6 +2571,9 @@ type PodSecurityContext struct {
 	// If unset, the Kubelet will not modify the ownership and permissions of any volume.
 	// +optional
 	FSGroup *int64
+	// UID and GID mappings for user namespaces
+	UIDMappings []LinuxIDMapping
+	GIDMappings []LinuxIDMapping
 }
 
 // PodQOSClass defines the supported qos classes of Pods.
@@ -4379,6 +4382,9 @@ type SecurityContext struct {
 	// the no_new_privs flag will be set on the container process.
 	// +optional
 	AllowPrivilegeEscalation *bool
+	// UID and GID mappings for user namespaces
+	UIDMappings []LinuxIDMapping
+	GIDMappings []LinuxIDMapping
 }
 
 // SELinuxOptions are the labels to be applied to the container.
@@ -4419,6 +4425,13 @@ type RangeAllocation struct {
 	// represented as a bit array starting at the base IP of the CIDR in Range, with each bit representing
 	// a single allocated address (the fifth bit on CIDR 10.0.0.0/8 is 10.0.0.4).
 	Data []byte
+}
+
+// UID and GID mapping
+type LinuxIDMapping struct {
+	HostId      *uint32
+	ContainerId *uint32
+	Size_       uint32
 }
 
 const (

@@ -264,6 +264,9 @@ message LinuxSandboxSecurityContext {
     //   <full-path-to-profile> is the full path of the profile.
     // Default: "", which is identical with unconfined.
     string seccomp_profile_path = 7;
+    // UID and GID mappings for user namespaces
+    repeated LinuxIDMapping uid_mappings = 9;
+    repeated LinuxIDMapping gid_mappings = 10;
 }
 
 // LinuxPodSandboxConfig holds platform-specific configurations for Linux
@@ -592,6 +595,9 @@ message LinuxContainerSecurityContext {
     // no_new_privs defines if the flag for no_new_privs should be set on the
     // container.
     bool no_new_privs = 11;
+    // UID and GID mappings for user namespaces
+    repeated LinuxIDMapping uid_mappings = 13;
+    repeated LinuxIDMapping gid_mappings = 14;
 }
 
 // LinuxContainerConfig contains platform-specific configuration for
