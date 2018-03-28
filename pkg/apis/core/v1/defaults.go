@@ -172,6 +172,16 @@ func SetDefaults_PodSpec(obj *v1.PodSpec) {
 	if obj.SecurityContext == nil {
 		obj.SecurityContext = &v1.PodSecurityContext{}
 	}
+	// default hostUserNamespace to true if unset
+	if obj.HostUserNamespace == nil {
+		var hostUserNamespace bool
+		if len(obj.SecurityContext.UIDMappings) == 0 {
+			hostUserNamespace = true
+		} else {
+			hostUserNamespace = false
+		}
+		obj.HostUserNamespace = &hostUserNamespace
+	}
 	if obj.TerminationGracePeriodSeconds == nil {
 		period := int64(v1.DefaultTerminationGracePeriodSeconds)
 		obj.TerminationGracePeriodSeconds = &period

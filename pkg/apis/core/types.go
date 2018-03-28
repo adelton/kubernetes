@@ -2667,6 +2667,11 @@ type PodSecurityContext struct {
 	// +k8s:conversion-gen=false
 	// +optional
 	HostIPC bool
+	// Use the host's user namespace.
+	// Optional: Default to true.
+	// +k8s:conversion-gen=false
+	// +optional
+	HostUserNamespace *bool
 	// Share a single process namespace between all of the containers in a pod.
 	// When this is set containers will be able to view and signal processes from other containers
 	// in the same pod, and the first process in each container will not be assigned PID 1.
@@ -2722,6 +2727,9 @@ type PodSecurityContext struct {
 	// If unset, the Kubelet will not modify the ownership and permissions of any volume.
 	// +optional
 	FSGroup *int64
+	// UID and GID mappings for user namespaces
+	UIDMappings []LinuxIDMapping
+	GIDMappings []LinuxIDMapping
 }
 
 // PodQOSClass defines the supported qos classes of Pods.
@@ -4609,6 +4617,9 @@ type SecurityContext struct {
 	// the no_new_privs flag will be set on the container process.
 	// +optional
 	AllowPrivilegeEscalation *bool
+	// UID and GID mappings for user namespaces
+	UIDMappings []LinuxIDMapping
+	GIDMappings []LinuxIDMapping
 }
 
 // SELinuxOptions are the labels to be applied to the container.
@@ -4649,6 +4660,13 @@ type RangeAllocation struct {
 	// represented as a bit array starting at the base IP of the CIDR in Range, with each bit representing
 	// a single allocated address (the fifth bit on CIDR 10.0.0.0/8 is 10.0.0.4).
 	Data []byte
+}
+
+// UID and GID mapping
+type LinuxIDMapping struct {
+	HostId      *uint32
+	ContainerId *uint32
+	Size_       uint32
 }
 
 const (

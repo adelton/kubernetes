@@ -384,6 +384,7 @@ func Convert_core_PodSpec_To_v1_PodSpec(in *core.PodSpec, out *v1.PodSpec, s con
 		out.HostPID = in.SecurityContext.HostPID
 		out.HostNetwork = in.SecurityContext.HostNetwork
 		out.HostIPC = in.SecurityContext.HostIPC
+		out.HostUserNamespace = in.SecurityContext.HostUserNamespace
 		out.ShareProcessNamespace = in.SecurityContext.ShareProcessNamespace
 	}
 
@@ -409,6 +410,7 @@ func Convert_v1_PodSpec_To_core_PodSpec(in *v1.PodSpec, out *core.PodSpec, s con
 	out.SecurityContext.HostNetwork = in.HostNetwork
 	out.SecurityContext.HostPID = in.HostPID
 	out.SecurityContext.HostIPC = in.HostIPC
+	out.SecurityContext.HostUserNamespace = in.HostUserNamespace
 	out.SecurityContext.ShareProcessNamespace = in.ShareProcessNamespace
 
 	return nil
@@ -456,6 +458,11 @@ func Convert_v1_Secret_To_core_Secret(in *v1.Secret, out *core.Secret, s convers
 }
 
 func Convert_core_SecurityContext_To_v1_SecurityContext(in *core.SecurityContext, out *v1.SecurityContext, s conversion.Scope) error {
+	if err := autoConvert_core_SecurityContext_To_v1_SecurityContext(in, out, s); err != nil {
+		return err
+	}
+
+	// TODO most of this function can probably be deleted
 	if in.Capabilities != nil {
 		out.Capabilities = new(v1.Capabilities)
 		if err := Convert_core_Capabilities_To_v1_Capabilities(in.Capabilities, out.Capabilities, s); err != nil {
@@ -482,6 +489,11 @@ func Convert_core_SecurityContext_To_v1_SecurityContext(in *core.SecurityContext
 }
 
 func Convert_core_PodSecurityContext_To_v1_PodSecurityContext(in *core.PodSecurityContext, out *v1.PodSecurityContext, s conversion.Scope) error {
+	if err := autoConvert_core_PodSecurityContext_To_v1_PodSecurityContext(in, out, s); err != nil {
+		return err
+	}
+
+	// TODO most of this function can probably be deleted
 	out.SupplementalGroups = in.SupplementalGroups
 	if in.SELinuxOptions != nil {
 		out.SELinuxOptions = new(v1.SELinuxOptions)
@@ -499,6 +511,11 @@ func Convert_core_PodSecurityContext_To_v1_PodSecurityContext(in *core.PodSecuri
 }
 
 func Convert_v1_PodSecurityContext_To_core_PodSecurityContext(in *v1.PodSecurityContext, out *core.PodSecurityContext, s conversion.Scope) error {
+	if err := autoConvert_v1_PodSecurityContext_To_core_PodSecurityContext(in, out, s); err != nil {
+		return err
+	}
+
+	// TODO most of this function can probably be deleted
 	out.SupplementalGroups = in.SupplementalGroups
 	if in.SELinuxOptions != nil {
 		out.SELinuxOptions = new(core.SELinuxOptions)

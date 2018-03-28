@@ -1033,6 +1033,20 @@ func TestSetDefaultPodSpecHostNetwork(t *testing.T) {
 	}
 }
 
+func TestSetDefaultPodSpecHostUserNamespace(t *testing.T) {
+	s := v1.PodSpec{}
+	pod := &v1.Pod{
+		Spec: s,
+	}
+	obj2 := roundTrip(t, runtime.Object(pod))
+	pod2 := obj2.(*v1.Pod)
+	s2 := pod2.Spec
+
+	if *s2.HostUserNamespace != true {
+		t.Errorf("Expected HostUserNamespace to default to true, was made %d", s2.HostUserNamespace)
+	}
+}
+
 func TestSetDefaultNodeExternalID(t *testing.T) {
 	name := "node0"
 	n := &v1.Node{}
