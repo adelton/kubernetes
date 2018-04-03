@@ -131,6 +131,8 @@ func (m *kubeGenericRuntimeManager) generatePodSandboxLinuxConfig(pod *v1.Pod) (
 		SecurityContext: &runtimeapi.LinuxSandboxSecurityContext{
 			Privileged:         kubecontainer.HasPrivilegedContainer(pod),
 			SeccompProfilePath: m.getSeccompProfileFromAnnotations(pod.Annotations, ""),
+			UidMappings:        convertToRuntimeLinuxIDMappings(pod.Spec.SecurityContext.UIDMappings),
+			GidMappings:        convertToRuntimeLinuxIDMappings(pod.Spec.SecurityContext.GIDMappings),
 		},
 	}
 
