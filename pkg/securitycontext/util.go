@@ -150,6 +150,20 @@ func securityContextFromPodSecurityContext(pod *v1.Pod) *v1.SecurityContext {
 		*synthesized.RunAsNonRoot = *pod.Spec.SecurityContext.RunAsNonRoot
 	}
 
+
+	if len(pod.Spec.SecurityContext.UIDMappings) > 0 {
+		synthesized.UIDMappings = make([]v1.LinuxIDMapping, len(pod.Spec.SecurityContext.UIDMappings))
+		for i := range pod.Spec.SecurityContext.UIDMappings {
+			(pod.Spec.SecurityContext.UIDMappings)[i].DeepCopyInto(&(synthesized.UIDMappings)[i])
+		}
+	}
+	if len(pod.Spec.SecurityContext.GIDMappings) > 0 {
+		synthesized.GIDMappings = make([]v1.LinuxIDMapping, len(pod.Spec.SecurityContext.GIDMappings))
+		for i := range pod.Spec.SecurityContext.GIDMappings {
+			(pod.Spec.SecurityContext.GIDMappings)[i].DeepCopyInto(&(synthesized.GIDMappings)[i])
+		}
+	}
+
 	return synthesized
 }
 

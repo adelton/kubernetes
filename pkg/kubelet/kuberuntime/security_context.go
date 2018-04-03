@@ -104,6 +104,8 @@ func convertToRuntimeSecurityContext(securityContext *v1.SecurityContext) *runti
 	sc := &runtimeapi.LinuxContainerSecurityContext{
 		Capabilities:   convertToRuntimeCapabilities(securityContext.Capabilities),
 		SelinuxOptions: convertToRuntimeSELinuxOption(securityContext.SELinuxOptions),
+		UidMappings:    convertToRuntimeLinuxIDMappings(securityContext.UIDMappings),
+		GidMappings:    convertToRuntimeLinuxIDMappings(securityContext.GIDMappings),
 	}
 	if securityContext.RunAsUser != nil {
 		sc.RunAsUser = &runtimeapi.Int64Value{Value: int64(*securityContext.RunAsUser)}
@@ -150,4 +152,22 @@ func convertToRuntimeCapabilities(opts *v1.Capabilities) *runtimeapi.Capability 
 	}
 
 	return capabilities
+}
+
+// convertToRuntimeLinuxIDMappings converts v1 UIDMappings and GIDMappings to runtimeapi.
+func convertToRuntimeLinuxIDMappings(ids []v1.LinuxIDMapping) []*runtimeapi.LinuxIDMapping {
+	if ids == nil {
+		return nil
+	}
+
+	oids := make([]*runtimeapi.LinuxIDMapping, len(ids))
+	for i := range ids {
+		oids[i] = &runtimeapi.LinuxIDMapping{
+			HostId:      *ids[i].HostId,
+			ContainerId: *ids[i].ContainerId,
+			Size_:       ids[i].Size_,
+		}
+	}
+
+	return oids
 }
