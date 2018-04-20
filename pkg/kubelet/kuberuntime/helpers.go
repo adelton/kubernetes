@@ -250,6 +250,15 @@ func networkNamespaceForPod(pod *v1.Pod) runtimeapi.NamespaceMode {
 	return runtimeapi.NamespaceMode_POD
 }
 
+func userNamespaceForPod(pod *v1.Pod) runtimeapi.NamespaceMode {
+	if pod != nil && pod.Spec.HostUserNamespace != nil {
+		if *pod.Spec.HostUserNamespace {
+			return runtimeapi.NamespaceMode_NODE
+		}
+	}
+	return runtimeapi.NamespaceMode_POD
+}
+
 func pidNamespaceForPod(pod *v1.Pod) runtimeapi.NamespaceMode {
 	if pod != nil {
 		if pod.Spec.HostPID {
@@ -270,5 +279,6 @@ func namespacesForPod(pod *v1.Pod) *runtimeapi.NamespaceOption {
 		Ipc:     ipcNamespaceForPod(pod),
 		Network: networkNamespaceForPod(pod),
 		Pid:     pidNamespaceForPod(pod),
+		User:    userNamespaceForPod(pod),
 	}
 }
