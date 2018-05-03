@@ -216,6 +216,12 @@ message NamespaceOption {
     // Note: There is currently no way to set CONTAINER scoped IPC in the Kubernetes API.
     // Namespaces currently set by the kubelet: POD, NODE
     NamespaceMode ipc = 3;
+    // User namespace for this container/sandbox.
+    // Note: There is currently no way to set CONTAINER scoped user namespace in the Kubernetes API.
+    // The container runtime should ignore this if user namespace is NOT enabled.
+    // POD is the default value. Kubelet will set it to NODE when trying to use host user-namespace
+    // Namespaces currently set by the kubelet: POD, NODE
+    NamespaceMode user = 4;
 }
 
 // Int64Value is the wrapper of int64.
@@ -1223,4 +1229,14 @@ message ReopenContainerLogRequest {
 }
 
 message ReopenContainerLogResponse{
+}
+
+// LinuxIDMapping represents a single user namespace mapping in Linux.
+message LinuxIDMapping {
+   // container_id is the starting id for the mapping inside the container.
+   uint32 container_id = 1;
+   // host_id is the starting id for the mapping on the host.
+   uint32 host_id = 2;
+   // size is the length of the mapping.
+   uint32 size = 3;
 }
