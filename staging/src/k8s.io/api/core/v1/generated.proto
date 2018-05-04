@@ -1616,6 +1616,15 @@ message LimitRangeSpec {
   repeated LimitRangeItem limits = 1;
 }
 
+// UID and GID mapping
+message LinuxIDMapping {
+  optional uint32 hostId = 1;
+
+  optional uint32 containerId = 2;
+
+  optional uint32 size = 3;
+}
+
 // List holds a list of objects, which may not be known by the server.
 message List {
   // Standard list metadata.
@@ -2770,6 +2779,11 @@ message PodSecurityContext {
   // If unset, the Kubelet will not modify the ownership and permissions of any volume.
   // +optional
   optional int64 fsGroup = 5;
+
+  // UID and GID mappings for user namespaces
+  repeated LinuxIDMapping uidMappings = 7;
+
+  repeated LinuxIDMapping gidMappings = 8;
 }
 
 // Describes the class of pods that should avoid this node.
@@ -3839,6 +3853,11 @@ message SecurityContext {
   // 2) has CAP_SYS_ADMIN
   // +optional
   optional bool allowPrivilegeEscalation = 7;
+
+  // UID and GID mappings for user namespaces
+  repeated LinuxIDMapping uidMappings = 9;
+
+  repeated LinuxIDMapping gidMappings = 10;
 }
 
 // SerializedReference is a reference to serialized object.
